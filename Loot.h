@@ -7,10 +7,14 @@
 
 #include "SlotMachine.h"
 #include "Hero.h"
+#include "Fighting.h"
+#include "Buff.h"
+
+class Fighting;
 
 class Loot : public SlotMachine{
 public:
-    void roll(Hero& hero);
+    void roll(Hero& hero, Fighting& fighting, Buff& buff);
 
 };
 

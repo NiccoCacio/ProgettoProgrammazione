@@ -9,31 +9,37 @@
 #include "GameCharacter.h"
 #include "Hero.h"
 #include "Buff.h"
+#include "PowerUp.h"
+#include <SFML/Graphics.hpp>
+#include "Animator.h"
 
 class Buff;
-
 class Hero;
+class PowerUp;
 
-class Villain : virtual public GameCharacter {
+
+class Villain : virtual public GameCharacter, public sf::Drawable, public sf::Transformable {
 
 public:
-    Villain(int h, int a, int d, int l, bool dt);
+    Villain(sf::Texture &texture1, int count); //TODO aggiungere int lvl
 
-    int fight(Villain &villain, Hero &enemy, Buff &buff);
+    int fight(Villain &villain, Hero &enemy, Buff &buff, PowerUp& powerUp, int const &molt);
+
+    void draw(sf::RenderTarget &target,sf::RenderStates states) const;
+
+    void update(sf::Time delta);
 
     virtual ~Villain();
 
-    int getLvl() const;
+    const sf::Texture &getTexture1() const;
 
-    void setLvl(int lvl);
-
-    bool isDeath() const;
-
-    void setDeath(bool death);
+    void setTexture1(const sf::Texture &texture1);
 
 protected:
-    int lvl;
-    bool death;
+    sf::Texture texture1;
+    sf::Texture texture2;
+    sf::Sprite visual;
+    int count;
 };
 
 

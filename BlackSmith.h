@@ -13,8 +13,9 @@
 class BlackSmith: public SlotMachine {
 
 public:
-    void roll(Hero& hero, Buff& buff);
+    void controlBS(BlackSmith& BS,Hero &hero, Buff& buff);
 
+    void roll(Hero& hero, Buff& buff);
 };
 
 

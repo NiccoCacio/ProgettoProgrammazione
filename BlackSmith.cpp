@@ -3,16 +3,55 @@
 //
 
 #include "BlackSmith.h"
-#include <time.h>
+#include <string>
 #include <iostream>
+#include <ctime>
+
 using namespace std;
+
+void BlackSmith::controlBS(BlackSmith &BS, Hero &hero, Buff &buff) {
+
+    string control;
+
+    cout << "vuoi applicare un incantamento?\n";
+    cin >> control;
+
+    if(control == "si"){
+        if(hero.getLvl() <= 7){
+            hero.setCoin(hero.getCoin() - 10);
+            if(hero.getCoin() < 0){
+                hero.setCoin(hero.getCoin() + 10);
+                cout << "non hai abbastanza soldi!\n";
+                return;
+            }
+            BS.roll(hero,buff);
+        }
+        else if(hero.getLvl() <= 14){
+            hero.setCoin(hero.getCoin() - 20);
+            if(hero.getCoin() < 0){
+                hero.setCoin(hero.getCoin() + 20);
+                cout << "non hai abbastanza soldi!\n";
+                return;
+            }
+            BS.roll(hero, buff);
+        }
+        else{
+            hero.setCoin(hero.getCoin() - 30);
+            if(hero.getCoin() < 0){
+                hero.setCoin(hero.getCoin() + 30);
+                cout << "non hai abbastanza soldi!\n";
+                return;
+            }
+            BS.roll(hero, buff);
+        }
+    }
+}
 
 void BlackSmith::roll(Hero &hero, Buff &buff) {
 
     int random;
 
     if(hero.getLvl() <= 7){
-        srand(time(NULL));
         random = (rand()%(100 + hero.getLuk()));
 
         if(random < 65 + hero.getLuk())
@@ -23,7 +62,6 @@ void BlackSmith::roll(Hero &hero, Buff &buff) {
             cout << "nessun incantamento!\n";
     }
     else if(hero.getLvl() <= 14){
-        srand(time(NULL));
         random = (rand()%(100 + hero.getLuk() * 2));
 
         if(random < 45 + hero.getLuk())
@@ -37,7 +75,6 @@ void BlackSmith::roll(Hero &hero, Buff &buff) {
 
     }
     else{
-        srand(time(NULL));
         random = (rand()%(100 + hero.getLuk()*3));
 
         if(random <30 + hero.getLuk())
@@ -52,3 +89,4 @@ void BlackSmith::roll(Hero &hero, Buff &buff) {
             cout << "nessun incantamento!\n";
     }
 }
+

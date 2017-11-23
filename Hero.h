@@ -6,29 +6,35 @@
 #define PROJECTPROGRAMMAZIONE_HERO_H
 
 
+#include <SFML/Graphics.hpp>
+#include "Animator.h"
 #include "GameCharacter.h"
 #include "Villain.h"
 #include "Buff.h"
+#include "PowerUp.h"
+#include "GameState.h"
 
 class Villain;
 
-class Hero : virtual public GameCharacter{
+class Hero : virtual public GameCharacter, public sf::Drawable, public sf::Transformable{
 public:
-    Hero(int hp = 20, int atk = 7, int def = 3, int l = 1, int lk = 1, int e = 0, int p = 0, int mH = 20, int c = 0, bool d = false);
+    Hero(sf::Texture &texture);
 
     virtual ~Hero();
 
-    int fight(Hero& hero, Villain& enemy, Buff &buff);
+    int fight(Hero& hero, Villain& enemy, Buff &buff, PowerUp& powerUp, int const &molt);
 
     int move(Hero& hero);
 
     int restoreHp(Hero& hero);
 
-    int expUp(Hero& hero);
+    int expUp(Hero& hero, Villain& villain, Buff& buff);
 
-    int getLvl() const;
+    int levelUp(Hero& hero, Buff& buff);
 
-    void setLvl(int lvl);
+    void draw(sf::RenderTarget &target,sf::RenderStates states) const;
+
+    void update(sf::Time delta);
 
     int getLuk() const;
 
@@ -50,18 +56,15 @@ public:
 
     void setCoin(int coin);
 
-    bool isDeath() const;
-
-    void setDeath(bool death);
-
 protected:
-    int lvl;
     int luk;
     int exp;
     int posX;
     int maxHp;
     int coin;
-    bool death;
+    sf::Texture texture;
+    sf::Sprite visual;
+    Animator runAnim;
 };
 
 

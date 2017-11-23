@@ -6,14 +6,16 @@
 #define PROJECTPROGRAMMAZIONE_SLOTMACHINE_H
 
 #include <time.h>
+#include "Animator.h"
+#include <SFML/Graphics.hpp>
 
 class SlotMachine {
-protected:
-    int count;
 
 public:
     virtual void roll();
 
+private:
+    Animator rollAnim;
 };
 
 

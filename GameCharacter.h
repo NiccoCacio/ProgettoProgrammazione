@@ -6,6 +6,9 @@
 #define PROJECTPROGRAMMAZIONE_GAMECHARACTER_H
 
 #include <string>
+#include <SFML/Graphics.hpp>
+#include "Animator.h"
+
 
 class GameCharacter {
 protected:
@@ -13,9 +16,19 @@ protected:
     int hp;
     int atk;
     int def;
+    int lvl;
+    bool isInMap;
+    bool death;
+    bool dying;
+
+    Animator attackAnim;
+    Animator dyingAnim;
+    Animator hurtAnim;
+    Animator idleAnimM;
+    Animator idleAnimB;
 
 public:
-    GameCharacter ( int h, int a, int d) : hp(h), atk(a), def(d){};
+    GameCharacter();
 
     virtual ~GameCharacter();
 
@@ -32,6 +45,22 @@ public:
     int getDef() const;
 
     void setDef(int def);
+
+    int getLvl() const;
+
+    void setLvl(int lvl);
+
+    bool isIsInMap() const;
+
+    void setIsInMap(bool isInMap);
+
+    bool isDead() const;
+
+    void setDeath(bool death);
+
+    bool isDying() const;
+
+    void setDying(bool dying);
 };
 
 
