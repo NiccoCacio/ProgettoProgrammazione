@@ -9,15 +9,20 @@
 #include <SFML/Graphics.hpp>
 #include "Hero.h"
 #include "Villain.h"
-#include "Loot.h"
+#include "Reward.h"
+#include "BlackSmith.h"
+#include "Fighting.h"
 
 class Game;
 class Villain;
+class BlackSmith;
+class Fighting;
+class Reward;
 
 class GameState {
 
 public:
-    enum State{
+    enum State {
         Welcome,
         Menu,
         Playing,
@@ -28,28 +33,37 @@ public:
         Lost,
         Count
     };
-
-    GameState(Game *game);
+    GameState (Game* game);
 
     Game *getGame() const;
 
+    Hero *getM_hero() const;
+
     virtual ~GameState();
 
-    int getPosSelection() const;
-    void setPosSelection(int posSelection);
-
     virtual void update(sf::Time delta) = 0;
+
     virtual void draw(sf::RenderWindow &window) = 0;
-    virtual void moveMenu(int pos) = 0;
+
+    virtual void moveMenu(int pos)= 0;
+
     virtual void movePlaying(int pos) = 0;
-    virtual void pressButton(sf::RenderWindow & window) = 0;
+
+    virtual void pressButton(sf::RenderWindow &window)= 0;
+
     virtual void attack(sf::RenderWindow &window) = 0;
 
 protected:
-    Game* game;
-    int posSelection = 0;
+    Game *game;
     Hero *m_hero;
     Villain *m_villain;
+    Villain *allVillain[21];
+    int posP;
+    int lvlP;
+    Buff *m_buff;
+    Fighting *fighting;
+    PowerUp *pU;
+    sf::Text stats[18];
 };
 
 
@@ -94,7 +108,7 @@ private:
     sf::Text text4;
     sf::Text text5;
     bool displayText;
-
+    int posSelection;
 };
 
 
@@ -113,7 +127,9 @@ public:
 private:
     sf::Text text1;
     int count;
-    Villain *allVillain[20];
+    sf::Sprite sprite;
+    sf::Texture texture;
+    sf::Text wave[2];
 };
 
 
@@ -134,6 +150,10 @@ private:
     sf::Text text2;
     sf::Text text3;
     bool displayText;
+    sf::Sprite sprite;
+    sf::Texture texture;
+    int posSelection;
+    sf::Text statsV[10];
 };
 
 
@@ -154,6 +174,9 @@ private:
     sf::Text text2;
     sf::Text text3;
     bool rolled = false;
+    sf::Sprite sprite;
+    sf::Texture texture;
+    Reward *reward;
 };
 
 
@@ -180,9 +203,13 @@ private:
     sf::Text text8;
     sf::Text text9;
     sf::Text text0;
+    sf::Text textStat;
     bool displayText;
-    bool host = false;
-    bool answer = false;
+    bool host;
+    bool answer;
+    int posSelection;
+    BlackSmith *bs;
+    sf::Text buffTxt;
 };
 
 
@@ -197,7 +224,6 @@ public:
     void movePlaying(int pos);
     void pressButton(sf::RenderWindow & window);
     void attack(sf::RenderWindow &window);
-
 };
 
 

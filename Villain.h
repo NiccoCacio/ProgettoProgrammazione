@@ -21,7 +21,7 @@ class PowerUp;
 class Villain : virtual public GameCharacter, public sf::Drawable, public sf::Transformable {
 
 public:
-    Villain(sf::Texture &texture1, int count); //TODO aggiungere int lvl
+    Villain(sf::Texture &texture1, int count);
 
     int fight(Villain &villain, Hero &enemy, Buff &buff, PowerUp& powerUp, int const &molt);
 
@@ -40,6 +40,8 @@ protected:
     sf::Texture texture2;
     sf::Sprite visual;
     int count;
+    bool defeated; //TODO utilizzare variabile defeated per sbloccare o meno un combattimento -- non serve, forse.
+
 };
 
 

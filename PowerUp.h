@@ -12,7 +12,7 @@ class Hero;
 class PowerUp {
 
 public:
-    PowerUp(int upAtk = 0, int downDef = 0, int upLuk = 0);
+    PowerUp();
 
     virtual ~PowerUp();
 

@@ -12,7 +12,8 @@ class Hero;
 
 class Buff {
 public:
-    Buff (bool c = false, int bA = 0, int bD = 0, int bHp = 0, int bL = 0);
+    //Buff (bool c = false, int bA = 0, int bD = 0, int bHp = 0, int bL = 0);
+    static Buff* getInstance();
 
     void basicEnchantment(Buff &buff ,Hero& hero);
     void rareEnchantment(Buff &buff ,Hero& hero);
@@ -45,6 +46,10 @@ protected:
     int buffDef;
     int buffHp;
     int buffluk;
+
+private:
+    static Buff* instance;
+    Buff ();
 };
 
 

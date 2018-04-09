@@ -7,17 +7,19 @@
 
 using namespace std;
 
+Hero* Hero::instance = 0;
 
 Hero::Hero(sf::Texture &texture) : texture(texture) {
+
     maxHp = hp = 20;
     atk = 7;
     def = 3;
     lvl = 1;
     luk = 1;
-    exp = coin = posX = 0;
-    death = dying = false;
-
-    // TODO implementare funzione srand((unsigned)time(NULL)); valida per tutto il gioco.
+    exp = coin = 0;
+    pos = 0;
+    death = dying = Attacking = Hurting = false;
+    strBuff = "";
 
     texture.loadFromFile("assets/textureHero.png");
 
@@ -91,6 +93,13 @@ Hero::Hero(sf::Texture &texture) : texture(texture) {
 
 }
 
+Hero* Hero::getInstance(sf::Texture &texture)
+{
+    if (instance == 0)
+        instance = new Hero(texture);
+
+    return instance;
+}
 
 int Hero::fight(Hero& hero, Villain& enemy, Buff &buff, PowerUp& powerUp, int const &molt){
 
@@ -101,23 +110,15 @@ int Hero::fight(Hero& hero, Villain& enemy, Buff &buff, PowerUp& powerUp, int co
 
     if(enemy.getHp() <= 0){
         cout << "il nemico è morto!\n";
+        hero.setAttacking(true);
         enemy.setDeath(true);
-    }else
+    }else {
         cout << "il nemico ha " << enemy.getHp() << " punti vita\n";
+        hero.setAttacking(true);
+        enemy.setHurting(true);
+    }
 
     return damage;
-}
-
-int Hero::move(Hero &hero) {
-
-    //TODO move
-
-    //if("freccia verso destra)
-    //hero.setPosX = hero.getPosX + 1;
-    //else if("freccia verso sinistra)
-    //uguale - 1;
-
-    return hero.getPosX();
 }
 
 int Hero::restoreHp(Hero &hero) {
@@ -193,39 +194,46 @@ void Hero::draw(sf::RenderTarget &target, sf::RenderStates states) const{
 
 void Hero::update(sf::Time delta) {
 
-    if(!isInMap) {
+     if(isInMap){
+         idleAnimM.play(sf::seconds(1), true);
+         idleAnimM.update(delta);
+         idleAnimM.animate(visual);
+     }
+     else
+     {
+         if(isDying()){
+             dyingAnim.play(sf::seconds(1), false);
+             dyingAnim.update(delta);
+             dyingAnim.animate(visual);
 
-        if (!isDead() && !isDying()) {
-            idleAnimB.update(delta);
-            idleAnimB.animate(visual);
-        } else
-        {
-            attackAnim.play(sf::seconds(1), false);
-            attackAnim.update(delta);
-            attackAnim.animate(visual);
+             if(!dyingAnim.isPlaying()) {
+                 setDying(false);
+                 setDeath(true);
+             }
+         }
+         else if(Hurting){
+             hurtAnim.play(sf::seconds(0.3), false);
+             hurtAnim.update(delta);
+             hurtAnim.animate(visual);
 
-            if(!attackAnim.isPlaying())
-                setDying(!isDying());
-        }
-        //hurtAnim.update(delta);
-        //hurtAnim.animate(visual);
-        //dyingAnim.update(delta);
-        //dyingAnim.animate(visual);
-        //attackAnim.update(delta);
-        //attackAnim.animate(visual);
+             if(!hurtAnim.isPlaying())
+                 setHurting(false);
 
+         }
+         else if(Attacking){
+             attackAnim.play(sf::seconds(1), false);
+             attackAnim.update(delta);
+             attackAnim.animate(visual);
 
-    } else
-    {
-        if(!isDead() && !isDying()) {
-            idleAnimM.update(delta);
-            idleAnimM.animate(visual);
-        } else
-        {
-            runAnim.update(delta);
-            runAnim.animate(visual);
-        }
-    }
+             if(!attackAnim.isPlaying())
+                 setAttacking(false);
+         }
+         else{
+             idleAnimB.play(sf::seconds(1), true);
+             idleAnimB.update(delta);
+             idleAnimB.animate(visual);
+         }
+     }
 }
 
 int Hero::getLuk() const {
@@ -248,14 +256,6 @@ Hero::~Hero() {
 
 }
 
-int Hero::getPosX() const {
-    return posX;
-}
-
-void Hero::setPosX(int posX) {
-    Hero::posX = posX;
-}
-
 int Hero::getMaxHp() const {
     return maxHp;
 }
@@ -270,4 +270,20 @@ int Hero::getCoin() const {
 
 void Hero::setCoin(int coin) {
     Hero::coin = coin;
+}
+
+int Hero::getPos() const {
+    return pos;
+}
+
+void Hero::setPos(int pos) {
+    Hero::pos = pos;
+}
+
+const string &Hero::getStrBuff() const {
+    return strBuff;
+}
+
+void Hero::setStrBuff(const string &strBuff) {
+    Hero::strBuff = strBuff;
 }

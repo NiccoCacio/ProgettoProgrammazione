@@ -8,6 +8,7 @@ using namespace std;
 
 Game::Game() : window(sf::VideoMode (640,480), "GAME") {
 
+    srand((unsigned)time(NULL));
     window.setFramerateLimit(10);
     //window.setVerticalSyncEnabled(true);
 
@@ -54,7 +55,7 @@ void Game::run() {
                 if(event.key.code == sf::Keyboard::H)
                     currentState->pressButton(window);
                 if(event.key.code == sf::Keyboard::L)
-                    currentState->attack(window);
+                    currentState->attack(window); // easter egg
 
                 if(event.key.code == sf::Keyboard::Up)
                     currentState->moveMenu(-1);

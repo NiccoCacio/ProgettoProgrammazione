@@ -11,39 +11,33 @@ using namespace std;
 
 void BlackSmith::controlBS(BlackSmith &BS, Hero &hero, Buff &buff) {
 
-    string control;
-
-    cout << "vuoi applicare un incantamento?\n";
-    cin >> control;
-
-    if(control == "si"){
-        if(hero.getLvl() <= 7){
-            hero.setCoin(hero.getCoin() - 10);
-            if(hero.getCoin() < 0){
-                hero.setCoin(hero.getCoin() + 10);
-                cout << "non hai abbastanza soldi!\n";
-                return;
-            }
+    if(hero.getLvl() <= 7){
+        hero.setCoin(hero.getCoin() - 10);
+        if(hero.getCoin() < 0){
+            hero.setCoin(hero.getCoin() + 10);
+            hero.setStrBuff("Non hai abbastanza soldi!");
+            cout << "Non hai abbastanza soldi! " << endl;
+        }else
             BS.roll(hero,buff);
         }
         else if(hero.getLvl() <= 14){
             hero.setCoin(hero.getCoin() - 20);
             if(hero.getCoin() < 0){
                 hero.setCoin(hero.getCoin() + 20);
-                cout << "non hai abbastanza soldi!\n";
-                return;
-            }
-            BS.roll(hero, buff);
+                hero.setStrBuff("Non hai abbastanza soldi!");
+                cout << "Non hai abbastanza soldi! " << endl;
+            }else
+                BS.roll(hero, buff);
         }
         else{
             hero.setCoin(hero.getCoin() - 30);
             if(hero.getCoin() < 0){
                 hero.setCoin(hero.getCoin() + 30);
-                cout << "non hai abbastanza soldi!\n";
-                return;
+                hero.setStrBuff("Non hai abbastanza soldi!");
+                cout << "Non hai abbastanza soldi! " << endl;
             }
-            BS.roll(hero, buff);
-        }
+            else
+                BS.roll(hero, buff);
     }
 }
 
@@ -56,10 +50,12 @@ void BlackSmith::roll(Hero &hero, Buff &buff) {
 
         if(random < 65 + hero.getLuk())
             buff.basicEnchantment(buff, hero);
-        else if(random <80 + hero.getLuk())
+        else if(random < 80 + hero.getLuk())
             buff.destroyEnchantment(buff, hero);
-        else
+        else {
             cout << "nessun incantamento!\n";
+            hero.setStrBuff("Nessun incantamento!");
+        }
     }
     else if(hero.getLvl() <= 14){
         random = (rand()%(100 + hero.getLuk() * 2));
@@ -70,23 +66,27 @@ void BlackSmith::roll(Hero &hero, Buff &buff) {
             buff.rareEnchantment(buff, hero);
         else if(random < 80 + hero.getLuk() * 2)
             buff.destroyEnchantment(buff, hero);
-        else
+        else {
             cout << "nessun incantamento!\n";
+            hero.setStrBuff("Nessun incantamento!");
+        }
 
     }
     else{
         random = (rand()%(100 + hero.getLuk()*3));
 
-        if(random <30 + hero.getLuk())
+        if(random < 30 + hero.getLuk())
             buff.basicEnchantment(buff, hero);
-        else if(random<50 + hero.getLuk() * 2)
+        else if(random< 50 + hero.getLuk() * 2)
             buff.rareEnchantment(buff, hero);
-        else if(random<60 + hero.getLuk() * 3)
+        else if(random< 60 + hero.getLuk() * 3)
             buff.epicEnchantment(buff, hero);
-        else if(random<70 + hero.getLuk() * 3)
+        else if(random< 70 + hero.getLuk() * 3)
             buff.destroyEnchantment(buff, hero);
-        else
+        else {
             cout << "nessun incantamento!\n";
+            hero.setStrBuff("Nessun incantamento!");
+        }
     }
 }
 

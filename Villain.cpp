@@ -9,7 +9,7 @@ using namespace std;
 
 Villain::Villain(sf::Texture &texture1, int count) : texture1(texture1), count(count) {
 
-    death = dying = false;
+    death = dying = Attacking = Hurting = false;
     atk = 5 + 3 * count;
     def = 2 + 2 * count;
     hp = 15 + 5 * count;
@@ -38,13 +38,14 @@ Villain::Villain(sf::Texture &texture1, int count) : texture1(texture1), count(c
         idleAnimB.addFrame(sf::IntRect(1599, 126, 178, 125));
         idleAnimB.addFrame(sf::IntRect(1777, 126, 178, 125));
 
-        attackAnim.addFrame(sf::IntRect(0, 0, 143, 128));
-        attackAnim.addFrame(sf::IntRect(155, 0, 143, 128));
-        attackAnim.addFrame(sf::IntRect(310, 0, 91, 153));
-        attackAnim.addFrame(sf::IntRect(465, 0, 95, 148));
-        attackAnim.addFrame(sf::IntRect(620, 0, 138, 128));
-        attackAnim.addFrame(sf::IntRect(775, 0, 142, 128));
-        attackAnim.addFrame(sf::IntRect(0, 160, 144, 128));
+        attackAnim.addFrame(sf::IntRect(1447, 253, 188, 125));
+        attackAnim.addFrame(sf::IntRect(1256, 253, 186, 125));
+        attackAnim.addFrame(sf::IntRect(1421, 126, 173, 125));
+        attackAnim.addFrame(sf::IntRect(386, 126, 158, 125));
+        attackAnim.addFrame(sf::IntRect(1713, 0, 148, 125));
+        attackAnim.addFrame(sf::IntRect(1556, 0, 149, 125));
+        attackAnim.addFrame(sf::IntRect(1246, 126, 168, 125));
+        attackAnim.addFrame(sf::IntRect(1070, 253, 183, 125));
 
         hurtAnim.addFrame(sf::IntRect(1073, 126, 169, 123));
         hurtAnim.addFrame(sf::IntRect(537, 126, 167, 123));
@@ -64,7 +65,7 @@ Villain::Villain(sf::Texture &texture1, int count) : texture1(texture1), count(c
 
         idleAnimM.play(sf::seconds(0.7), true);
         idleAnimB.play(sf::seconds(0.7), true);
-        attackAnim.play(sf::seconds(0.8), false);
+        attackAnim.play(sf::seconds(0.7), false);
         hurtAnim.play(sf::seconds(0.7), false);
         dyingAnim.play(sf::seconds(0.7), false);
     }else
@@ -91,14 +92,13 @@ Villain::Villain(sf::Texture &texture1, int count) : texture1(texture1), count(c
         idleAnimB.addFrame(sf::IntRect(596, 647, 137, 127));
         idleAnimB.addFrame(sf::IntRect(745, 647, 137, 127));
 
-        attackAnim.addFrame(sf::IntRect(1447, 253, 188, 125));
-        attackAnim.addFrame(sf::IntRect(1256, 253, 186, 125));
-        attackAnim.addFrame(sf::IntRect(1421, 126, 173, 125));
-        attackAnim.addFrame(sf::IntRect(386, 126, 158, 125));
-        attackAnim.addFrame(sf::IntRect(1713, 0, 148, 125));
-        attackAnim.addFrame(sf::IntRect(1556, 0, 149, 125));
-        attackAnim.addFrame(sf::IntRect(1246, 126, 168, 125));
-        attackAnim.addFrame(sf::IntRect(1070, 253, 183, 125));
+        attackAnim.addFrame(sf::IntRect(0, 20, 143, 153));
+        attackAnim.addFrame(sf::IntRect(155, 5, 143, 153));
+        attackAnim.addFrame(sf::IntRect(310, 5, 91, 153));
+        attackAnim.addFrame(sf::IntRect(465, 20, 95, 153));
+        attackAnim.addFrame(sf::IntRect(620, 20, 138, 153));
+        attackAnim.addFrame(sf::IntRect(775, 20, 142, 153));
+        attackAnim.addFrame(sf::IntRect(0, 160, 144, 153));
 
         hurtAnim.addFrame(sf::IntRect(606, 326, 165, 155));
         hurtAnim.addFrame(sf::IntRect(770, 326, 165, 155));
@@ -118,11 +118,12 @@ Villain::Villain(sf::Texture &texture1, int count) : texture1(texture1), count(c
 
         idleAnimM.play(sf::seconds(0.7), true);
         idleAnimB.play(sf::seconds(0.7), true);
-        attackAnim.play(sf::seconds(0.8), false);
+        attackAnim.play(sf::seconds(0.7), false);
         hurtAnim.play(sf::seconds(0.7), false);
         dyingAnim.play(sf::seconds(0.7), false);
     }
 }
+
 
 int Villain::fight(Villain& villain, Hero& enemy, Buff &buff, PowerUp& powerUp, int const &molt){
 
@@ -132,11 +133,15 @@ int Villain::fight(Villain& villain, Hero& enemy, Buff &buff, PowerUp& powerUp, 
     enemy.setHp(enemy.getHp() - damage);
 
     if(enemy.getHp() <= 0){
-        enemy.setDeath(true);
+        villain.setAttacking(true);
+        enemy.setDying(true);
         cout << "hai perso!\n";
         }
-    else
+    else {
         cout << "l'eroe ha " << enemy.getHp() << " punti vita\n";
+        villain.setAttacking(true);
+        enemy.setHurting(true);
+    }
 
     return damage;
 
@@ -151,31 +156,47 @@ void Villain::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 void Villain::update(sf::Time delta) {
-    sf::Time clk = delta;
-    if(!isInMap)
+    //sf::Time clk = delta;
+    if(isInMap){
+        idleAnimM.update(delta);
+        idleAnimM.animate(visual);
+    }
+    else
     {
-        if(!isDead() && !isDying()) {
-            idleAnimB.update(delta);
-            idleAnimB.animate(visual);
+        if(isDying()) {
+            dyingAnim.play(sf::seconds(0.7), false);
+            dyingAnim.update(delta);
+            dyingAnim.animate(visual);
+
+            if(!dyingAnim.isPlaying()) {
+                setDying(false);
+                setDeath(true);
+            }
         }
-        else
+        else if(isHurting())
         {
             hurtAnim.play(sf::seconds(0.7), false);
             hurtAnim.update(delta);
             hurtAnim.animate(visual);
 
             if(!hurtAnim.isPlaying())
-                setDying(!isDying());
-
-            //dyingAnim.update(delta);
-            //dyingAnim.animate(visual);
-            //attackAnim.update(delta);
-            //attackAnim.animate(visual);
+                setHurting(false);
         }
-    }else
-    {
-        idleAnimM.update(delta);
-        idleAnimM.animate(visual);
+        else if(isAttacking())
+        {
+            attackAnim.play(sf::seconds(0.7), false);
+            attackAnim.update(delta);
+            attackAnim.animate(visual);
+
+            if(!attackAnim.isPlaying())
+                setAttacking(false);
+        }
+        else
+        {
+            idleAnimB.play(sf::seconds(0.7), true);
+            idleAnimB.update(delta);
+            idleAnimB.animate(visual);
+        }
     }
 }
 

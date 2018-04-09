@@ -9,14 +9,14 @@ set(SOURCE_FILES
         Fighting.cpp Fighting.h
         GameCharacter.cpp GameCharacter.h
         Hero.cpp Hero.h
-        Loot.cpp Loot.h
+        Reward.cpp Reward.h
         main.cpp
         PowerUp.cpp PowerUp.h
         SlotMachine.cpp SlotMachine.h
         Villain.cpp Villain.h
         Game.cpp Game.h
         GameState.cpp GameState.h
-        Animator.cpp Animator.h Map.cpp Map.h)
+        Animator.cpp Animator.h)
 
 add_executable(ProjectProgrammazione ${SOURCE_FILES})
 

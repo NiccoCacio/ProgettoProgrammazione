@@ -4,6 +4,14 @@
 
 #include "PowerUp.h"
 
+
+PowerUp::PowerUp() {
+    upAtk = downDef = upLuk = 0;
+}
+
+PowerUp::~PowerUp() {}
+
+
 int PowerUp::getUpAtk() const {
     return upAtk;
 }
@@ -26,10 +34,4 @@ int PowerUp::getUpLuk() const {
 
 void PowerUp::setUpLuk(int upLuk) {
     PowerUp::upLuk = upLuk;
-}
-
-PowerUp::PowerUp(int upAtk, int downDef, int upLuk) : upAtk(upAtk), downDef(downDef), upLuk(upLuk) {}
-
-PowerUp::~PowerUp() {
-
 }

@@ -32,7 +32,6 @@ protected:
     sf::Font font;
     sf::Texture texture;
     sf::Texture textureV;
-
 };
 
 

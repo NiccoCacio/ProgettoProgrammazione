@@ -18,13 +18,11 @@ class Villain;
 
 class Hero : virtual public GameCharacter, public sf::Drawable, public sf::Transformable{
 public:
-    Hero(sf::Texture &texture);
+    static Hero* getInstance(sf::Texture & texture);
 
-    virtual ~Hero();
+    ~Hero();
 
     int fight(Hero& hero, Villain& enemy, Buff &buff, PowerUp& powerUp, int const &molt);
-
-    int move(Hero& hero);
 
     int restoreHp(Hero& hero);
 
@@ -44,10 +42,6 @@ public:
 
     void setExp(int exp);
 
-    int getPosX() const;
-
-    void setPosX(int posX);
-
     int getMaxHp() const;
 
     void setMaxHp(int maxHp);
@@ -56,15 +50,28 @@ public:
 
     void setCoin(int coin);
 
+    int getPos() const;
+
+    void setPos(int pos);
+
+    const std::string &getStrBuff() const;
+
+    void setStrBuff(const std::string &strBuff);
+
 protected:
     int luk;
     int exp;
-    int posX;
     int maxHp;
     int coin;
+    int pos;
     sf::Texture texture;
     sf::Sprite visual;
     Animator runAnim;
+    std::string strBuff;
+
+private:
+    static Hero* instance;
+    Hero(sf::Texture &texture);
 };
 
 

@@ -20,6 +20,8 @@ protected:
     bool isInMap;
     bool death;
     bool dying;
+    bool Attacking;
+    bool Hurting;
 
     Animator attackAnim;
     Animator dyingAnim;
@@ -61,6 +63,14 @@ public:
     bool isDying() const;
 
     void setDying(bool dying);
+
+    bool isAttacking() const;
+
+    void setAttacking(bool Attacking);
+
+    bool isHurting() const;
+
+    void setHurting(bool Hurting);
 };
 
 

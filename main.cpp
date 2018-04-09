@@ -4,7 +4,7 @@
 #include "Villain.h"
 #include "Hero.h"
 #include "Buff.h"
-#include "Loot.h"
+#include "Reward.h"
 #include "BlackSmith.h"
 #include "Fighting.h"
 #include "PowerUp.h"

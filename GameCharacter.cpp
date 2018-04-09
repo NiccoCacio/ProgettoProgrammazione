@@ -70,6 +70,22 @@ void GameCharacter::setDying(bool dying) {
     GameCharacter::dying = dying;
 }
 
+bool GameCharacter::isAttacking() const {
+    return Attacking;
+}
+
+void GameCharacter::setAttacking(bool Attacking) {
+    GameCharacter::Attacking = Attacking;
+}
+
+bool GameCharacter::isHurting() const {
+    return Hurting;
+}
+
+void GameCharacter::setHurting(bool Hurting) {
+    GameCharacter::Hurting = Hurting;
+}
+
 
 
 
