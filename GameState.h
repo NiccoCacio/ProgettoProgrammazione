@@ -29,13 +29,14 @@ public:
         Battlefield,
         Loot,
         Tavern,
-        Won,
-        Lost,
+        End,
         Count
     };
     GameState (Game* game);
 
     Game *getGame() const;
+
+    void setGame(Game *game);
 
     Hero *getM_hero() const;
 
@@ -61,8 +62,6 @@ protected:
     int posP;
     int lvlP;
     Buff *m_buff;
-    Fighting *fighting;
-    PowerUp *pU;
     sf::Text stats[18];
 };
 
@@ -130,6 +129,8 @@ private:
     sf::Sprite sprite;
     sf::Texture texture;
     sf::Text wave[2];
+    sf::Sprite spr;
+    sf::Texture texture1;
 };
 
 
@@ -154,6 +155,9 @@ private:
     sf::Texture texture;
     int posSelection;
     sf::Text statsV[10];
+    sf::Sprite spr[3];
+    Fighting *fighting;
+    PowerUp *pU;
 };
 
 
@@ -213,10 +217,10 @@ private:
 };
 
 
-class LostState : public GameState{
+class EndState : public GameState{
 
 public:
-    LostState(Game *game);
+    EndState(Game *game);
 
     void update(sf::Time delta);
     void draw(sf::RenderWindow &window);
@@ -224,20 +228,11 @@ public:
     void movePlaying(int pos);
     void pressButton(sf::RenderWindow & window);
     void attack(sf::RenderWindow &window);
-};
 
-
-class WonState : public GameState{
-
-public:
-    WonState(Game *game);
-
-    void update(sf::Time delta);
-    void draw(sf::RenderWindow &window);
-    void moveMenu(int pos);
-    void movePlaying(int pos);
-    void pressButton(sf::RenderWindow & window);
-    void attack(sf::RenderWindow &window);
+private:
+    sf::Text text1;
+    sf::Text text2;
+    sf::Text text3;
 
 };
 

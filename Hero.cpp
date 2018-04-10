@@ -111,7 +111,7 @@ int Hero::fight(Hero& hero, Villain& enemy, Buff &buff, PowerUp& powerUp, int co
     if(enemy.getHp() <= 0){
         cout << "il nemico è morto!\n";
         hero.setAttacking(true);
-        enemy.setDeath(true);
+        enemy.setDying(true);
     }else {
         cout << "il nemico ha " << enemy.getHp() << " punti vita\n";
         hero.setAttacking(true);
@@ -127,6 +127,7 @@ int Hero::restoreHp(Hero &hero) {
     if(hero.getHp()>hero.getMaxHp())
         hero.setHp(hero.getMaxHp());
 
+    hero.setStrBuff("Ti sei curato!");
     cout << "i nuovi punti vita dell'eroe sono: " << hero.getHp() << "\n";
 
     return getHp();
@@ -253,7 +254,7 @@ void Hero::setExp(int exp) {
 }
 
 Hero::~Hero() {
-
+    instance = 0;
 }
 
 int Hero::getMaxHp() const {

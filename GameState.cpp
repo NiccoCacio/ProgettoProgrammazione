@@ -14,7 +14,6 @@ GameState::GameState(Game *game) : game(game) {
     m_hero = hero->getInstance(getGame()->getTexture());
     Buff * buff;
     m_buff = buff->getInstance();
-    fighting = new Fighting();
 }
 
 Game *GameState::getGame() const {
@@ -27,6 +26,10 @@ GameState::~GameState() {
 
 Hero *GameState::getM_hero() const {
     return m_hero;
+}
+
+void GameState::setGame(Game *game) {
+    GameState::game = game;
 }
 
 
@@ -227,6 +230,12 @@ MenuState::MenuState(Game *game) : GameState(game) {
 
 void PlayingState::update(sf::Time delta) {
 
+    if(m_hero->isDead()){
+        posP = lvlP = 0;
+        getGame()->changeGameState(GameState::End);
+    }
+
+
     m_hero->setPos(posP - 1 + lvlP * 3);
 
     m_hero->setPosition(20,290);
@@ -274,6 +283,7 @@ void PlayingState::draw(sf::RenderWindow &window) {
 
     window.draw(sprite);
     window.draw(text1);
+    window.draw(spr);
 
     for(int i = 0; i < 18; i++)
         window.draw(stats[i]);
@@ -295,17 +305,6 @@ void PlayingState::moveMenu(int pos) {
 
 void PlayingState::movePlaying(int pos) {
 
-    /*
-    if(posP == 0);
-    else {
-        if ((m_hero->getPos() + pos) < lvlP * 3)
-            m_hero->setPos(lvlP * 3);
-        else if (m_hero->getPos() + pos > 20)
-            m_hero->setPos(20);
-        else
-            m_hero->setPos(m_hero->getPos() + pos);
-    } */
-
     posP = posP + pos;
 
     if(posP < 0){
@@ -324,7 +323,6 @@ void PlayingState::movePlaying(int pos) {
         else
             posP = 3;
     }
-
 }
 
 void PlayingState::pressButton(sf::RenderWindow & window) {
@@ -411,14 +409,15 @@ PlayingState::PlayingState(Game *game) : GameState(game) {
     wave[0].setPosition(460,40);
     wave[1].setPosition(570,40);
 
+    texture1.loadFromFile("assets/Tavern.png");
+    spr.setTexture(texture1);
+    spr.setPosition(0,250);
 }
 
 
 void BattlefieldState::update(sf::Time delta) {
 
-    if(allVillain[m_hero->getPos()]->getHp() > 0 && m_hero->getHp() > 0);
-
-    else if(allVillain[m_hero->getPos()]->getHp() < 0 )
+    if(allVillain[m_hero->getPos()]->isDead())
     {
         m_hero->expUp(*m_hero, *allVillain[m_hero->getPos()], *m_buff);
         allVillain[m_hero->getPos()]->setDeath(false);
@@ -426,14 +425,14 @@ void BattlefieldState::update(sf::Time delta) {
         pU = new PowerUp();
         getGame()->changeGameState(GameState::Loot);
     }
-    else
+    else if(m_hero->isDead())
     {
         allVillain[m_hero->getPos()]->setDeath(false);
         allVillain[m_hero->getPos()]->setHp(15 + 5 * m_hero->getPos());
         pU = new PowerUp();
-        getGame()->changeGameState(GameState::Menu);
+        posP = lvlP = 0;
+        getGame()->changeGameState(GameState::Playing);
     }
-
 
     string str = to_string(m_hero->getHp());
     stats[1].setString(str);
@@ -494,6 +493,7 @@ void BattlefieldState::update(sf::Time delta) {
     allVillain[m_hero->getPos()]->setPosition(500,100);
     allVillain[m_hero->getPos()]->setIsInMap(false);
     allVillain[m_hero->getPos()]->update(delta);
+
 }
 
 void BattlefieldState::draw(sf::RenderWindow &window) {
@@ -501,12 +501,11 @@ void BattlefieldState::draw(sf::RenderWindow &window) {
     window.draw(sprite);
     window.draw(text1);
 
-    for(int i = 0; i < 18; i++)
+    for (int i = 0; i < 18; i++)
         window.draw(stats[i]);
 
-    for(int i = 0; i < 10; i++)
+    for (int i = 0; i < 10; i++)
         window.draw(statsV[i]);
-
 
     if (posSelection == 0) {
         if (displayText)
@@ -520,6 +519,9 @@ void BattlefieldState::draw(sf::RenderWindow &window) {
 
     window.draw(*m_hero);
     window.draw(*allVillain[m_hero->getPos()]);
+
+    for (int i = 0; i < 3; i++)
+        window.draw(fighting->getSprite()[i]);
 }
 
 void BattlefieldState::moveMenu(int pos) {
@@ -562,6 +564,7 @@ BattlefieldState::BattlefieldState(Game *game) : GameState(game){
         allVillain[k] = new Villain(game->getTextureV(), k);
 
     pU = new PowerUp();
+    fighting = new Fighting();
 
     texture.loadFromFile("assets/backgroundP.png");
     sprite.setTexture(texture);
@@ -645,13 +648,17 @@ BattlefieldState::BattlefieldState(Game *game) : GameState(game){
     statsV[4].setPosition(500,80);
     statsV[5].setPosition(540,80);
 
-    statsV[6].setString("/"); // mettere max hp
+    statsV[6].setString("/");
     statsV[6].setPosition(560,40);
     statsV[7].setPosition(570,40);
 
     statsV[8].setString("Lvl: ");
     statsV[8].setPosition(500,20);
     statsV[9].setPosition(540,20);
+
+    fighting->getSprite()[0].setPosition(170,330);
+    fighting->getSprite()[1].setPosition(270,330);
+    fighting->getSprite()[2].setPosition(370,330);
 }
 
 
@@ -700,6 +707,7 @@ void LootState::draw(sf::RenderWindow &window) {
     for(int i = 0; i < 18; i++) {
         window.draw(stats[i]);
     }
+    window.draw(reward->getSprite());
 }
 
 void LootState::moveMenu(int pos) {
@@ -714,7 +722,7 @@ void LootState::pressButton(sf::RenderWindow & window) {
 
     if(!rolled){
         rolled = true;
-        reward->roll(*m_hero, *fighting, *m_buff);
+        reward->roll(*m_hero, *m_buff);
     }
     else {
         rolled = false;
@@ -797,6 +805,8 @@ LootState::LootState(Game *game) : GameState(game) {
     stats[16].setString("/");
     stats[16].setPosition(160,20);
     stats[17].setPosition(170,20);
+
+    reward->getSprite().setPosition(270,300);
 }
 
 
@@ -878,7 +888,7 @@ void TavernState::draw(sf::RenderWindow &window) {
                     window.draw(text7);
                 window.draw(text8);
                 window.draw(text0);
-                window.draw(buffTxt); //TODO work in progress
+                window.draw(buffTxt);
             } else if (posSelection == 1) {
                 if (displayText)
                     window.draw(text8);
@@ -900,6 +910,7 @@ void TavernState::draw(sf::RenderWindow &window) {
                     window.draw(text7);
                 window.draw(text8);
                 window.draw(text0);
+                window.draw(buffTxt);
             } else if (posSelection == 1) {
                 if (displayText)
                     window.draw(text8);
@@ -961,14 +972,18 @@ void TavernState::pressButton(sf::RenderWindow & window) {
             }
         } else {
             if (posSelection == 0) {
-                if(m_hero->getHp() == m_hero->getMaxHp())
-                    std::cout << "I tuoi Hp sono già al massimo! " << m_hero->getCoin();
 
-                else {
+                if(m_hero->getHp() == m_hero->getMaxHp()){
+                    m_hero->setStrBuff("I tuoi Hp sono gia' al massimo!");
+                    std::cout << "I tuoi Hp sono già al massimo! " << m_hero->getCoin();
+                }
+                else
+                {
                     m_hero->setCoin(m_hero->getCoin() - 10);
 
                     if (m_hero->getCoin() < 0) {
                         m_hero->setCoin(m_hero->getCoin() + 10);
+                        m_hero->setStrBuff("Non hai abbastanza soldi!");
                         std::cout << "Non hai abbastanza soldi " << m_hero->getCoin();
                     } else
                         m_hero->restoreHp(*m_hero);
@@ -1035,10 +1050,10 @@ TavernState::TavernState(Game *game) : GameState(game) {
     text6.setPosition(130,100);
 
     text7.setFont(game->getFont());
-    text7.setString("Si");
+    text7.setString("Si (10 Coin)");
     text7.setCharacterSize(25);
     text7.setFillColor(sf::Color::White);
-    text7.setPosition(300,160);
+    text7.setPosition(250,160);
 
     text8.setFont(game->getFont());
     text8.setString("No");
@@ -1108,59 +1123,67 @@ TavernState::TavernState(Game *game) : GameState(game) {
 }
 
 
-void LostState::update(sf::Time delta) {
+void EndState::update(sf::Time delta) {
 
 }
 
-void LostState::draw(sf::RenderWindow &window) {
+void EndState::draw(sf::RenderWindow &window) {
+
+    window.draw(text1);
+    window.draw(text2);
+    window.draw(text3);
+}
+
+void EndState::moveMenu(int pos) {
 
 }
 
-void LostState::moveMenu(int pos) {
+void EndState::movePlaying(int pos) {
 
 }
 
-void LostState::movePlaying(int pos) {
+void EndState::pressButton(sf::RenderWindow & window) {
+
+    m_hero->setMaxHp(20);
+    m_hero->setHp(20);
+    m_hero->setAtk(7);
+    m_hero->setDef(3);
+    m_hero->setLvl(1);
+    m_hero->setLuk(1);
+    m_hero->setExp(0);
+    m_hero->setExp(0);
+    m_hero->setPos(0);
+    m_hero->setDeath(false);
+    m_hero->setDying(false);
+    m_hero->setAttacking(false);
+    m_hero->setHurting(false);
+
+    getGame()->changeGameState(GameState::Menu); //TODO resettare gioco.
+}
+
+void EndState::attack(sf::RenderWindow &window) {
 
 }
 
-void LostState::pressButton(sf::RenderWindow & window) {
+EndState::EndState(Game *game) : GameState(game) {
 
-}
+    text1.setFont(game->getFont());
+    text1.setString("END");
+    text1.setCharacterSize(20);
+    text1.setFillColor(sf::Color::Red);
+    text1.setPosition(300,20);
 
-void LostState::attack(sf::RenderWindow &window) {
+    text2.setFont(game->getFont());
+    text2.setString("YOU ARE \n\n  DEAD");
+    text2.setCharacterSize(35);
+    text2.setFillColor(sf::Color::White);
+    text2.setPosition(220,150);
 
-}
+    text3.setFont(game->getFont());
+    text3.setString("Press H to continue");
+    text3.setCharacterSize(20);
+    text3.setFillColor(sf::Color::White);
+    text3.setPosition(200,350);
 
-LostState::LostState(Game *game) : GameState(game) {
-
-}
-
-
-void WonState::update(sf::Time delta) {
-
-}
-
-void WonState::draw(sf::RenderWindow &window) {
-
-}
-
-void WonState::moveMenu(int pos) {
-
-}
-
-void WonState::movePlaying(int pos) {
-
-}
-
-void WonState::pressButton(sf::RenderWindow & window) {
-
-}
-
-void WonState::attack(sf::RenderWindow &window) {
-
-}
-
-WonState::WonState(Game *game) : GameState(game) {
 
 }

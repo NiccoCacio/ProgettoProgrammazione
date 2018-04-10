@@ -21,7 +21,7 @@ void BlackSmith::controlBS(BlackSmith &BS, Hero &hero, Buff &buff) {
             BS.roll(hero,buff);
         }
         else if(hero.getLvl() <= 14){
-            hero.setCoin(hero.getCoin() - 20);
+            hero.setCoin(hero.getCoin() - 10);
             if(hero.getCoin() < 0){
                 hero.setCoin(hero.getCoin() + 20);
                 hero.setStrBuff("Non hai abbastanza soldi!");
@@ -30,7 +30,7 @@ void BlackSmith::controlBS(BlackSmith &BS, Hero &hero, Buff &buff) {
                 BS.roll(hero, buff);
         }
         else{
-            hero.setCoin(hero.getCoin() - 30);
+            hero.setCoin(hero.getCoin() - 10);
             if(hero.getCoin() < 0){
                 hero.setCoin(hero.getCoin() + 30);
                 hero.setStrBuff("Non hai abbastanza soldi!");

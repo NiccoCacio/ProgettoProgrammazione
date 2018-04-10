@@ -8,6 +8,15 @@
 
 using namespace std;
 
+Fighting::Fighting() {
+    texture1.loadFromFile("assets/fighting/hero.attack.png");
+    texture2.loadFromFile("assets/fighting/villain.fight.png");
+    texture3.loadFromFile("assets/fighting/attackUp.png");
+    texture4.loadFromFile("assets/fighting/defenseDown.png");
+    texture5.loadFromFile("assets/fighting/luckUp.png");
+    texture6.loadFromFile("assets/fighting/expUp.png");
+}
+
 void Fighting::roll(Hero& hero, Villain& villain, Buff& buff, PowerUp& powerUp) {
 
     int control[3];
@@ -20,21 +29,27 @@ void Fighting::roll(Hero& hero, Villain& villain, Buff& buff, PowerUp& powerUp) 
 
         if (random[count] < 30 + hero.getLuk()) {
             control[count] = 1;
+            sprite[count].setTexture(texture1);
             cout << "hero.fight\n";
         } else if (random[count] < 60 + hero.getLuk()) {
             control[count] = 2;
+            sprite[count].setTexture(texture2);
             cout << "villain.fight\n";
         } else if (random[count] < 75 + (hero.getLuk()) * 2) {
             control[count] = 3;
+            sprite[count].setTexture(texture3);
             cout << "incremento attacco\n";
         } else if (random[count] < 90 + (hero.getLuk() * 2)) {
             control[count] = 4;
+            sprite[count].setTexture(texture4);
             cout << "decremento difesa\n";
         } else if (random[count] < 95 + (hero.getLuk() * 3)) {
             control[count] = 5;
+            sprite[count].setTexture(texture5);
             cout << "incremento fortuna\n";
         } else {
             control[count] = 6;
+            sprite[count].setTexture(texture6);
             cout << "incremento esperienza\n";
         }
     }
@@ -87,3 +102,10 @@ void Fighting::roll(Hero& hero, Villain& villain, Buff& buff, PowerUp& powerUp) 
     else
         hero.setExp(hero.getExp() + 1 * hero.getLvl());
 }
+
+Fighting::~Fighting() {}
+
+sf::Sprite *Fighting::getSprite() {
+    return sprite;
+}
+

@@ -27,8 +27,7 @@ Game::Game() : window(sf::VideoMode (640,480), "GAME") {
     gameStates[GameState::Battlefield] = new BattlefieldState(this);
     gameStates[GameState::Loot] = new LootState(this);
     gameStates[GameState::Tavern] = new TavernState(this);
-    gameStates[GameState::Lost] = new LostState(this);
-    gameStates[GameState::Won] = new WonState(this);
+    gameStates[GameState::End] = new EndState(this);
 
     changeGameState(GameState::Welcome);
 }

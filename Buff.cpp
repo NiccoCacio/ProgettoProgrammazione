@@ -56,7 +56,7 @@ void Buff::basicEnchantment(Buff &buff, Hero& hero) {
     }
     else{
         buff.setBuffluk(1);
-        hero.setStrBuff("la fortuna e' incrementata di 4");
+        hero.setStrBuff("la fortuna e' incrementata di 1");
         cout << "la nuova fortuna è: " << (hero.getLuk() + buff.getBuffluk()) <<"\n";
     }
 }

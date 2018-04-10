@@ -14,8 +14,19 @@ class Fighting;
 
 class Reward : public SlotMachine{
 public:
-    void roll(Hero& hero, Fighting& fighting, Buff& buff);
+    Reward();
 
+    void roll(Hero& hero, Buff& buff);
+
+    sf::Sprite &getSprite();
+
+private:
+    sf::Texture texture1;
+    sf::Texture texture2;
+    sf::Texture texture3;
+    sf::Texture texture4;
+
+    sf::Sprite sprite;
 };
 
 
